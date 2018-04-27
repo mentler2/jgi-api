@@ -1,9 +1,18 @@
 #!bash/bin/
-# pass group name as first variable
 
-curl 'https://signon-old.jgi.doe.gov/signon/create' --data-urlencode 'login=mentler@vols.utk.edu' --data-urlencode 'password=Ee3coba69@' -c cookies 
-curl --cookie cookies --output files.xml "https://genome.jgi.doe.gov/portal/ext-api/downloads/get-directory?organism=$1&organizedByFileType=false"
+username=$(read -p "JGI Username: ")
+password=$(read -s -p "JGI Password: ")
 
+curl 'https://signon-old.jgi.doe.gov/signon/create' --data-urlencode "login=$username" --data-urlencode "password=$password" -c cookies 
+node_name=$(read -p "\nNode name (e.g., 'fungi,' or 'pucciniomycotina'): ")
+curl --cookie cookies --output files.xml "https://genome.jgi.doe.gov/portal/ext-api/downloads/get-directory?organism=$node_name&organizedByFileType=false"
+size_file_heirarchy=$(ls -s files.xml)
+size_file_heirarchy=${size_file_heirarchy:0:1}
+if [ "$size_file_heirarchy" -gt "0" ]; then
+	echo 'File heirarchy downloaded as files.xml.'
+else
+	echo 'problem obtaining file heirarchy'
+fi
 #grab md5s
 grep -E 'AssemblyScaffolds_Repeatmasked.fasta.gz' "files.xml" | grep -Eo 'md5=".+"' > unformatted_md5s.txt
 while IFS='' read -r line || [[ -n "$line" ]]; do
