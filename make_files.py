@@ -21,26 +21,30 @@ sums = file_in3.read().splitlines()
 # "url" tag. This code grabs only the filename. 
 for line in lines_xml:
 	if re.search("filename=", line):
-		match_start = re.search("filename=", line) #returns one match object
-		start_index = match_start.start() #starting index of the first matching group
-		matches_end = re.search(str(sys.argv[6]), line) #returns one match object with two groups
-		end_index = matches_end.end(0) # ending index of the first matching group (index 0 is the whole match, which includes the first group and other groups)
-		# possible python version compatibility issue here
-		substring = line[start_index:end_index+1] #slice the string
+		substring = re.findall('filename=".+?"', line) # returns a list, even if only one match
 		split_temp = []
-		split_temp = re.split("=", str(substring))
+		split_temp = re.split("=", str(substring[0]))
 		filenames.append(split_temp[1].strip("\""))
 ################################################################
 
 unique_filenames = set(filenames)
 if len(unique_filenames) != len(filenames):
-	print('Warning: Repeated filenames with unique md5sums exist. Appending md5sum to filename prefix to differentiate.')
-	for i in range(len(filenames)):
-		filenames[i]=str(sums[i])+str(filenames[i])
+	print('Warning: Repeated filenames with unique md5sums exist. Please manually verify.')
+	print('Printing nonunique filenames.')
+	seen = {}
+	repeats = []
+	for name in filenames:
+		if name not in seen:
+			seen[name] = 1
+		else:
+			if seen[name] == 1:
+				repeats.append(name)
+			seen[name] +- 1
+	print(repeats)
 
 lines = file_in.read().splitlines()
 for i in range(len(lines)):
-	file_out.write('curl ' + '\'' + lines[i] + '\'' + ' -b cookies --output ' + filenames[i] + '\n')
+	file_out.write('curl ' + '\'' + lines[i] + '\'' + ' -b temp_files/cookies --output ' + filenames[i] + '\n')
  
 for i in range(len(sums)):
 	file_out2.write(sums[i] + '  ' + filenames[i] + '\n')
