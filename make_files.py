@@ -45,8 +45,6 @@ if len(repeats) > 0:
 	print('Warning: Repeated filenames with unique md5sums exist. Please manually verify.')
 	print('Printing nonunique filenames.')
 	print(repeats)
-print(' dictionary "seen" after parsing md5sum filenames: ')
-print(seen)
 for line in lines_xml_no_md5:
 	if re.search("filename=", line):
 		substring = re.findall('filename=".+?"', line) # returns a list, even if only one match
@@ -70,9 +68,6 @@ for name in filenames_no_md5:
 if len(repeats_no_md5) > 0:
 	print('Excluding files without an md5sum hash that share a filename with files associated with an md5sum hash.')
 	print(repeats_no_md5)
-	
-print(' dictionary "seen" after parsing filenames not associated with md5sum: ')
-print(seen)
 ###############################################################
 
 #### write files ##############################################
