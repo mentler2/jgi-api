@@ -95,7 +95,7 @@ fi
 
 # write executable files
 python make_files.py "$new_directory/formatted_urls.txt" "$new_directory/unique_lines.txt" "$new_directory/curls.sh" "$new_directory/unique_md5s.txt" "$new_directory/md5s_and_filenames.txt" "$new_directory" "$new_directory/formatted_urls_without_md5.txt" "$new_directory/lines_without_md5.xml" "$new_directory/curls_without_md5.sh"
-echo 'Commmand files written.'
+echo 'Command files written.'
 
 #download files with an md5sum
 num_downloads=$(wc -l < "$new_directory/curls.sh")
