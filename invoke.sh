@@ -86,8 +86,11 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
 done < "$new_directory/urls_without_md5.txt"
 if [ -s "$new_directory/formatted_urls_without_md5.txt" ]; then
 	echo "Urls for files lacking md5sum hash grabbed and formatted."
+elif [ -e "$new_directory/formatted_urls_without_md5.txt" ]; then
+	echo "File containing urls of filenames lacking a hash is empty."
 else
-	echo "Urls for files lacking an md5sum hash were not grabbed and formatted."
+	echo "No file exists for urls of filenames without a hash. This will result in an error in python script execution. Creating empty file."
+	touch "$new_directory/formatted_urls_without_md5.txt"
 fi
 
 # write executable files
