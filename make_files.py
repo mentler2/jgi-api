@@ -30,22 +30,23 @@ for line in lines_xml:
 		split_temp = []
 		split_temp = re.split("=", str(substring[0]))
 		filenames.append(split_temp[1].strip("\""))
-# find and print repeated filesnames with unique md5sums########
+# find and print repeated filenames with unique md5sums########
 unique_filenames = set(filenames)
 seen = {}
-if len(unique_filenames) != len(filenames):
+repeats = []
+for name in filenames:
+	if name not in seen:
+		seen[name] = 1
+	else:
+		if seen[name] == 1:
+			repeats.append(name)
+		seen[name] +- 1
+if len(repeats) > 0:
 	print('Warning: Repeated filenames with unique md5sums exist. Please manually verify.')
 	print('Printing nonunique filenames.')
-	repeats = []
-	for name in filenames:
-		if name not in seen:
-			seen[name] = 1
-		else:
-			if seen[name] == 1:
-				repeats.append(name)
-			seen[name] +- 1
 	print(repeats)
-
+print(' dictionary "seen" after parsing md5sum filenames: ')
+print(seen)
 for line in lines_xml_no_md5:
 	if re.search("filename=", line):
 		substring = re.findall('filename=".+?"', line) # returns a list, even if only one match
@@ -69,6 +70,9 @@ for name in filenames_no_md5:
 if len(repeats_no_md5) > 0:
 	print('Excluding files without an md5sum hash that share a filename with files associated with an md5sum hash.')
 	print(repeats_no_md5)
+	
+print(' dictionary "seen" after parsing filenames not associated with md5sum: ')
+print(seen)
 ###############################################################
 
 #### write files ##############################################
@@ -82,5 +86,5 @@ lines_no_md5 = file_in4.read().splitlines()
 
 keys = filenames_no_md5_unique.keys()
 for i in range(len(keys)):
-	file_out3.write('curl ' + ' -b ' + sys.argv[6] + '/cookies --output ' + keys[i] + ' ' + lines_no_md5[filenames_no_md5_unique[key]] + '\n')
+	file_out3.write('curl ' + ' -b ' + sys.argv[6] + '/cookies --output ' + keys[i] + ' ' + lines_no_md5[filenames_no_md5_unique[keys[i]]] + '\n')
 ################################################################
