@@ -15,6 +15,7 @@ if [ "${lines_cookies[0]}" -eq "6" ]; then
 else
 	echo ''	
 	echo "Unsuccessful login. Terminating script."
+	rm -r "$new_directory"
 	exit 1
 fi
 read -p "Node name (e.g., 'fungi,' or 'pucciniomycotina'): " node_name
